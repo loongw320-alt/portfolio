@@ -109,6 +109,23 @@ def create_bot():
             log.warning('Alert creation failed: %s', exc)
             await interaction.followup.send('无法设置提醒，请检查参数或稍后重试 / Cannot create alert; check parameters or retry.', ephemeral=True)
 
+    @client.tree.command(name='alerts', description='List your active price alerts / 查看我的提醒')
+    async def alerts(interaction: discord.Interaction):
+        mine = client.store.for_user(interaction.user.id)
+        if not mine:
+            await interaction.response.send_message('You have no active alerts / 暂无提醒', ephemeral=True)
+            return
+        lines = [f"`{a['id'][:8]}` {a['symbol']} {a['direction']} {a['target']:g} USDT" for a in mine]
+        await interaction.response.send_message('\n'.join(lines) + '\nCancel with /cancel <id>', ephemeral=True)
+
+    @client.tree.command(name='cancel', description='Delete one of your alerts by id / 按 ID 删除提醒')
+    async def cancel(interaction: discord.Interaction, alert_id: str):
+        try:
+            item = client.store.cancel(interaction.user.id, alert_id)
+            await interaction.response.send_message(f"Cancelled / 已删除: {item['symbol']} {item['direction']} {item['target']:g}", ephemeral=True)
+        except ValueError as exc:
+            await interaction.response.send_message(str(exc), ephemeral=True)
+
     return client
 
 

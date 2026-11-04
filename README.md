@@ -1,34 +1,37 @@
-# Local Developer Portfolio · 本地开发作品集
+# Portfolio — Python Automation, Bots & Web Tools
 
-三个可独立运行的小项目，展示行情数据处理、异步机器人与前端风险计算。
+Three small, production-minded projects: a market-data scraper, a Discord bot and a browser-based risk calculator. Each one runs on its own, has tests and documents its limits honestly.
 
-Three independent projects covering market-data processing, an asynchronous bot and a browser-based risk calculator.
-
-| 项目 / Project | 亮点 / Highlights | 入口 / Entry |
+| Project | What it shows | Try it |
 | --- | --- | --- |
-| [Crypto Scraper](crypto-scraper/README.md) | 标准库 OKX 行情采集、离线适配、三类 CSV 排行 / Standard-library ingestion, offline snapshots and ranked CSVs | [HTML 示例 / Report](crypto-scraper/examples/report.html) |
-| [Discord Bot](discord-bot/README.md) | 斜杠命令、持久化价格提醒、新人欢迎和关键词过滤 / Slash commands, persistent alerts, welcomes and filtering | [机器人模板 / Template](discord-bot/bot.py) |
-| [Position Calculator](position-calc/README.md) | 无依赖本地仓位、止损与逐仓爆仓近似计算 / Dependency-free position sizing and isolated liquidation estimates | [打开计算器 / Open calculator](position-calc/index.html) |
+| [Crypto Scraper](crypto-scraper/README.md) | Pulls every OKX USDT perpetual (500+ contracts) in about a second, ranks them and exports CSV + a mobile-friendly HTML report. Standard library only, with retries and offline mode. | [Live report](https://raw.githack.com/loongw320-alt/portfolio/main/crypto-scraper/examples/report.html) |
+| [Discord Bot](discord-bot/README.md) | Slash commands for prices and persistent price alerts (`/price`, `/alert`, `/alerts`, `/cancel`), member welcomes and whole-word keyword moderation. | [Source](discord-bot/bot.py) |
+| [Position Calculator](position-calc/README.md) | Futures position sizing, stop-loss risk and isolated liquidation estimates. Zero dependencies, English/中文. | [Open calculator](https://raw.githack.com/loongw320-alt/portfolio/main/position-calc/index.html) |
 
-## 在线预览 / Live preview (phone-friendly)
+## Screenshots (mobile, 390×844)
 
-- [Crypto Scraper report](https://raw.githack.com/loongw320-alt/portfolio/main/crypto-scraper/examples/report.html)
-- [Position Calculator](https://raw.githack.com/loongw320-alt/portfolio/main/position-calc/index.html)
+<p>
+<img src="screenshots/scraper-report-390x844.png" alt="Crypto scraper HTML report on mobile" width="260">
+&nbsp;
+<img src="screenshots/position-calc-390x844.png" alt="Position calculator on mobile" width="260">
+</p>
 
-## 快速体验 / Quick start
+## Quick start
 
-Python 项目要求 Python 3.10+。从本目录执行 / Python projects require Python 3.10+. From this directory:
+Requires Python 3.10+. From the repository root:
 
 ```sh
-python3 crypto-scraper/scraper.py --output /tmp/okx-report      # live OKX, ~1s, no API key
+python3 crypto-scraper/scraper.py --output /tmp/okx-report             # live OKX data, ~1s, no API key
 python3 crypto-scraper/scraper.py --offline market.json --output /tmp/offline-report
-python3 -m pytest crypto-scraper/tests discord-bot/tests   # or: python3 -m unittest discover -s <project>/tests
+python3 -m pytest crypto-scraper/tests discord-bot/tests               # or: python3 -m unittest discover -s <project>/tests
 ```
 
-用浏览器打开 `crypto-scraper/examples/report.html` 或 `position-calc/index.html`。启动机器人需安装依赖、配置 Discord token 与服务器权限，详见项目 README；本地检查无需连接 Discord。
+Open `position-calc/index.html` in any browser. Running the Discord bot needs `pip install -r discord-bot/requirements.txt` and your own bot token; see its README. The tests run fully offline.
 
-Open either HTML file in a browser. Running the bot requires dependencies, a Discord token and server permissions; see its README. Local checks do not connect to Discord.
+The bundled scraper report is a real live OKX run from 2026-11-04 (525 USDT perpetuals). It is a point-in-time snapshot and does not auto-update. `market.json` is a 30-row offline sample used for network-free demos and tests.
 
-爬虫示例报告是 2026-11-04 在线实跑 OKX 生成的 525 个 USDT 永续合约快照（非自动更新）。`market.json` 是一份 30 条的离线样例，用于无网络演示和测试。每个项目 README 均含中英双语功能、运行方式与输出示例。
+---
 
-The scraper example report is a real live OKX run from 2026-11-04 covering 525 USDT perpetuals (a point-in-time snapshot, not auto-updating). `market.json` is a 30-row offline sample for network-free demos and tests. Each project has bilingual features, setup instructions and output examples.
+## 中文简介
+
+三个可独立运行的小项目：行情爬虫（OKX 全部 USDT 永续，约 1 秒完成，输出 CSV 和手机友好的 HTML 报表）、Discord 行情提醒机器人（`/price` `/alert` `/alerts` `/cancel`、欢迎新人、整词关键词过滤）、仓位与止损计算器（中英双语，纯本地计算）。运行方式见上方命令和各项目 README。爬虫示例是 2026-11-04 的真实在线数据快照，不会自动更新。

@@ -58,6 +58,23 @@ class LogicTests(unittest.TestCase):
         self.assertTrue(blocked('A SPAM link', ['spam', '']))
         self.assertTrue(blocked('示例广告', ['广告']))
         self.assertFalse(blocked('hello', ['', 'spam']))
+        self.assertFalse(blocked('the scamper ran', ['scam']))
+        self.assertTrue(blocked('total SCAM!', ['scam']))
+        self.assertTrue(blocked('get free-nitro now', ['free-nitro']))
+
+    def test_list_and_cancel(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            store = AlertStore(Path(tmp) / 'a.json')
+            a = store.add(1, 9, 'BTC', 100, 'above')
+            store.add(2, 9, 'ETH', 5, 'below')
+            self.assertEqual([x['id'] for x in store.for_user(1)], [a['id']])
+            with self.assertRaises(ValueError):
+                store.cancel(2, a['id'][:8])  # other user's alert
+            with self.assertRaises(ValueError):
+                store.cancel(1, 'abc')  # too short
+            self.assertEqual(store.cancel(1, a['id'][:8].upper())['id'], a['id'])
+            self.assertEqual(AlertStore(Path(tmp) / 'a.json').for_user(1), [])
+            self.assertEqual(len(store.items), 1)
 
     @patch('logic.urlopen')
     def test_price_no_network(self, opener):

@@ -37,8 +37,15 @@ def fetch_price(symbol):
 
 
 def blocked(content, keywords):
+    """True if any keyword appears as a whole word (case-insensitive), e.g. 'scam' matches 'a scam!' but not 'scamper'.
+    CJK keywords match as substrings."""
     text = content.casefold()
-    return any(word.strip().casefold() in text for word in keywords if word.strip())
+    cjk = re.compile(r'[\u3040-\u30ff\u3400-\u9fff\uac00-\ud7af]')
+    # CJK text has no spaces between words, so CJK keywords use substring matching.
+    if any(cjk.search(w) and w.strip().casefold() in text for w in keywords if w.strip()):
+        return True
+    return any(not cjk.search(word) and re.search(r'(?<!\w)' + re.escape(word.strip().casefold()) + r'(?!\w)', text)
+               for word in keywords if word.strip())
 
 
 def reached(alert, price):
@@ -78,6 +85,20 @@ class AlertStore:
                     symbol=instrument(symbol), target=positive(target), direction=direction)
         self._commit(self.items + [item])
         return item
+
+    def for_user(self, user_id):
+        return [a for a in self.items if a['user_id'] == user_id]
+
+    def cancel(self, user_id, alert_id):
+        """Delete one of the user's alerts by full id or unique prefix (min 4 chars). Returns the alert."""
+        alert_id = alert_id.strip().lower()
+        if len(alert_id) < 4:
+            raise ValueError('Use at least 4 characters of the alert id / 至少输入 4 位提醒 ID')
+        matches = [a for a in self.for_user(user_id) if a['id'].startswith(alert_id)]
+        if len(matches) != 1:
+            raise ValueError('No unique alert with that id / 未找到唯一匹配的提醒')
+        self.remove(matches[0]['id'])
+        return matches[0]
 
     def remove(self, alert_id):
         self._commit([a for a in self.items if a['id'] != alert_id])
