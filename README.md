@@ -1,12 +1,14 @@
 # Portfolio — Python Automation, Bots & Web Tools
 
-Three small, production-minded projects: a market-data scraper, a Discord bot and a browser-based risk calculator. Each one runs on its own, has tests and documents its limits honestly.
+Small, production-minded projects: a market-data scraper, a Discord bot and a browser-based risk calculator. Each one runs on its own, has tests and documents its limits honestly.
 
 | Project | What it shows | Try it |
 | --- | --- | --- |
 | [Crypto Scraper](crypto-scraper/README.md) | Pulls every OKX USDT perpetual (500+ contracts) in about a second, ranks them and exports CSV + a mobile-friendly HTML report. Standard library only, with retries and offline mode. | [Live report](https://raw.githack.com/loongw320-alt/portfolio/main/crypto-scraper/examples/report.html) |
 | [Discord Bot](discord-bot/README.md) | Slash commands for prices and persistent price alerts (`/price`, `/alert`, `/alerts`, `/cancel`), member welcomes and whole-word keyword moderation. | [Source](discord-bot/bot.py) |
 | [Position Calculator](position-calc/README.md) | Futures position sizing, stop-loss risk and isolated liquidation estimates. Zero dependencies, English/中文. | [Open calculator](https://raw.githack.com/loongw320-alt/portfolio/main/position-calc/index.html) |
+| [Funding Rate Calculator](funding-calc/README.md) | Spot-perp funding arbitrage estimator: notional, funding income, four-leg fees, net P&L and APY, with full risk notes. Zero dependencies, English/中文, 12 tests. | [Open calculator](https://raw.githack.com/loongw320-alt/portfolio/main/funding-calc/index.html) |
+| [Info Service Landing Page](info-service/index.html) | Bilingual static landing page for a crypto market info subscription: tiers, sample report, FAQ, risk notice. No forms or payments; contact via X only. | [Open page](https://raw.githack.com/loongw320-alt/portfolio/main/info-service/index.html) |
 
 ## Screenshots (mobile, 390×844)
 
@@ -34,4 +36,4 @@ The bundled scraper report is a real live OKX run from 2026-11-04 (525 USDT perp
 
 ## 中文简介
 
-三个可独立运行的小项目：行情爬虫（OKX 全部 USDT 永续，约 1 秒完成，输出 CSV 和手机友好的 HTML 报表）、Discord 行情提醒机器人（`/price` `/alert` `/alerts` `/cancel`、欢迎新人、整词关键词过滤）、仓位与止损计算器（中英双语，纯本地计算）。运行方式见上方命令和各项目 README。爬虫示例是 2026-11-04 的真实在线数据快照，不会自动更新。
+三个可独立运行的小项目：行情爬虫（OKX 全部 USDT 永续，约 1 秒完成，输出 CSV 和手机友好的 HTML 报表）、Discord 行情提醒机器人（`/price` `/alert` `/alerts` `/cancel`、欢迎新人、整词关键词过滤）、仓位与止损计算器（中英双语，纯本地计算）、资金费率套利计算器、信息服务落地页（仅通过 X 联系）。运行方式见上方命令和各项目 README。爬虫示例是 2026-11-04 的真实在线数据快照，不会自动更新。

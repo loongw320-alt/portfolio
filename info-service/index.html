@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>加密行情日报 | Crypto Daily Brief</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0d1117;--card:#161b22;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--accent:#58a6ff;--accent2:#3fb950;--warn:#d29922;--red:#f85149}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;overflow-x:hidden}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+
+.container{max-width:860px;margin:0 auto;padding:0 20px}
+
+/* Language toggle */
+.lang-toggle{position:fixed;top:16px;right:16px;z-index:100;display:flex;gap:4px;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:4px}
+.lang-btn{padding:6px 14px;border:none;background:transparent;color:var(--muted);cursor:pointer;border-radius:6px;font-size:14px;font-weight:500;transition:all .2s}
+.lang-btn.active{background:var(--accent);color:#fff}
+
+/* Sections */
+section{padding:48px 0}
+.hero{padding:80px 0 48px;text-align:center}
+.hero h1{font-size:clamp(1.8rem,5vw,2.6rem);margin-bottom:12px;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero p{font-size:clamp(1rem,2.5vw,1.15rem);color:var(--muted);max-width:560px;margin:0 auto}
+
+h2{font-size:clamp(1.3rem,3.5vw,1.6rem);margin-bottom:20px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+h3{font-size:1.1rem;margin-bottom:8px}
+
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:16px}
+
+/* Features */
+.features{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+.features .card h3{color:var(--accent)}
+
+/* Pricing */
+.pricing-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px}
+.pricing-card{text-align:center;position:relative}
+.pricing-card.highlight{border-color:var(--accent2)}
+.pricing-card .badge{display:inline-block;background:var(--accent2);color:#000;font-size:12px;font-weight:700;padding:2px 10px;border-radius:10px;margin-bottom:10px}
+.pricing-card .price{font-size:2rem;font-weight:700;margin:8px 0}
+.pricing-card .price small{font-size:.85rem;color:var(--muted);font-weight:400}
+.pricing-card .desc{color:var(--muted);font-size:.9rem;margin-bottom:16px}
+.pricing-card ul{text-align:left;list-style:none;font-size:.9rem}
+.pricing-card ul li{padding:4px 0}
+.pricing-card ul li::before{content:"✓ ";color:var(--accent2)}
+.pricing-card ul li.no::before{content:"— ";color:var(--muted)}
+.pricing-card ul li.no{color:var(--muted)}
+
+/* Sample report */
+.sample{position:relative}
+.sample-banner{background:var(--warn);color:#000;text-align:center;padding:8px;border-radius:8px 8px 0 0;font-size:.85rem;font-weight:600}
+.sample-content{border-radius:0 0 8px 8px;border-top:none}
+.sample table{width:100%;border-collapse:collapse;font-size:.85rem;margin:12px 0}
+.sample th,.sample td{padding:8px 10px;text-align:left;border-bottom:1px solid var(--border)}
+.sample th{color:var(--accent);font-weight:600}
+.sample h4{color:var(--accent);margin:16px 0 8px;font-size:1rem}
+.sample ul{margin-left:18px;font-size:.9rem}
+.sample ul li{margin:4px 0}
+.sample blockquote{border-left:3px solid var(--warn);padding:8px 14px;margin:12px 0;color:var(--muted);font-size:.85rem;background:rgba(210,153,34,.08);border-radius:0 6px 6px 0}
+
+/* FAQ */
+details{margin-bottom:8px}
+details summary{cursor:pointer;padding:14px 18px;background:var(--card);border:1px solid var(--border);border-radius:8px;font-weight:500;list-style:none;display:flex;justify-content:space-between;align-items:center}
+details summary::after{content:"+";font-size:1.2rem;color:var(--muted);transition:transform .2s}
+details[open] summary::after{content:"−"}
+details .faq-body{padding:12px 18px;color:var(--muted);font-size:.9rem}
+
+/* Disclaimer */
+.disclaimer{background:rgba(248,81,73,.08);border:1px solid var(--red);border-radius:12px;padding:20px 24px;font-size:.85rem;color:var(--muted)}
+.disclaimer strong{color:var(--red)}
+
+/* Contact */
+.contact{text-align:center;padding:48px 0 64px}
+.contact .x-link{display:inline-flex;align-items:center;gap:8px;padding:12px 28px;border:1px solid var(--border);border-radius:10px;font-size:1.05rem;transition:border-color .2s}
+.contact .x-link:hover{border-color:var(--accent);text-decoration:none}
+.contact .x-link svg{width:20px;height:20px;fill:var(--text)}
+
+footer{text-align:center;padding:20px;color:var(--muted);font-size:.8rem;border-top:1px solid var(--border)}
+
+/* Hide language content */
+[data-lang="en"]{display:none}
+body.en [data-lang="zh"]{display:none}
+body.en [data-lang="en"]{display:block}
+body.en [data-lang-inline="zh"]{display:none}
+body.en [data-lang-inline="en"]{display:inline}
+body:not(.en) [data-lang-inline="en"]{display:none}
+
+@media(max-width:480px){
+  section{padding:32px 0}
+  .hero{padding:64px 0 32px}
+  .card{padding:18px}
+  .sample table{font-size:.78rem}
+  .sample th,.sample td{padding:6px 6px}
+}
+</style>
+</head>
+<body>
+
+<!-- Language Toggle -->
+<div class="lang-toggle">
+  <button class="lang-btn active" id="btn-zh" onclick="setLang('zh')">中文</button>
+  <button class="lang-btn" id="btn-en" onclick="setLang('en')">EN</button>
+</div>
+
+<div class="container">
+
+  <!-- Hero -->
+  <section class="hero">
+    <div data-lang="zh">
+      <h1>加密行情日报</h1>
+      <p>每日推送 BTC / ETH / SOL 方向判断、关键价位、资金费率与策略建议，帮你快速掌握市场脉搏。</p>
+    </div>
+    <div data-lang="en">
+      <h1>Crypto Daily Brief</h1>
+      <p>Daily BTC / ETH / SOL direction calls, key levels, funding rates &amp; strategy ideas — your market pulse in one read.</p>
+    </div>
+  </section>
+
+  <!-- Service Intro -->
+  <section>
+    <div data-lang="zh">
+      <h2>服务介绍</h2>
+      <div class="features">
+        <div class="card"><h3>方向 &amp; 关键位</h3><p>每日对 BTC、ETH、SOL 给出方向判断与强弱支撑/阻力位，附置信度和核心逻辑。</p></div>
+        <div class="card"><h3>资金费率 &amp; 持仓</h3><p>追踪全网资金费率、多空比与大额清算风险区间，量化市场情绪。</p></div>
+        <div class="card"><h3>消息面解读</h3><p>筛选当日宏观、行业、情绪面的关键信息，过滤噪音，聚焦真正影响行情的变量。</p></div>
+        <div class="card"><h3>策略建议</h3><p>提供激进与稳健两档操作思路及观望条件，适配不同风险偏好。</p></div>
+      </div>
+    </div>
+    <div data-lang="en">
+      <h2>What You Get</h2>
+      <div class="features">
+        <div class="card"><h3>Direction &amp; Key Levels</h3><p>Daily BTC, ETH, SOL direction calls with support/resistance levels, confidence ratings and core logic.</p></div>
+        <div class="card"><h3>Funding Rates &amp; Positioning</h3><p>Track funding rates, long/short ratios and liquidation clusters to gauge market sentiment.</p></div>
+        <div class="card"><h3>News Digest</h3><p>Curated macro, industry and sentiment signals — noise filtered, focus on what actually moves price.</p></div>
+        <div class="card"><h3>Strategy Ideas</h3><p>Aggressive &amp; conservative trade setups plus sit-out conditions, tailored to different risk appetites.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing -->
+  <section>
+    <div data-lang="zh"><h2>定价方案</h2></div>
+    <div data-lang="en"><h2>Pricing</h2></div>
+
+    <div class="pricing-grid">
+      <!-- Free -->
+      <div class="card pricing-card">
+        <div data-lang="zh"><h3>免费版</h3></div>
+        <div data-lang="en"><h3>Free</h3></div>
+        <div class="price">$0</div>
+        <div class="desc" data-lang="zh">观望体验</div>
+        <div class="desc" data-lang="en">Explore first</div>
+        <ul>
+          <li data-lang="zh">延迟版日报（次日推送）</li>
+          <li data-lang="en">Delayed daily brief (next day)</li>
+          <li data-lang="zh">BTC 摘要</li>
+          <li data-lang="en">BTC summary only</li>
+          <li class="no" data-lang="zh">无资金费率 / 消息面</li>
+          <li class="no" data-lang="en">No funding rates / news</li>
+          <li class="no" data-lang="zh">无策略建议</li>
+          <li class="no" data-lang="en">No strategy ideas</li>
+        </ul>
+      </div>
+      <!-- Monthly -->
+      <div class="card pricing-card">
+        <div data-lang="zh"><h3>月付版</h3></div>
+        <div data-lang="en"><h3>Monthly</h3></div>
+        <div class="price">$29<small>/mo</small></div>
+        <div class="desc" data-lang="zh">灵活订阅</div>
+        <div class="desc" data-lang="en">Flexible subscription</div>
+        <ul>
+          <li data-lang="zh">实时推送日报</li>
+          <li data-lang="en">Real-time daily brief</li>
+          <li data-lang="zh">BTC / ETH / SOL 全覆盖</li>
+          <li data-lang="en">Full BTC / ETH / SOL coverage</li>
+          <li data-lang="zh">资金费率 &amp; 消息面</li>
+          <li data-lang="en">Funding rates &amp; news digest</li>
+          <li data-lang="zh">策略建议（激进/稳健）</li>
+          <li data-lang="en">Strategy ideas (aggressive / conservative)</li>
+          <li data-lang="zh">每月 3 次专属问答</li>
+          <li data-lang="en">3 Q&amp;A sessions / month</li>
+        </ul>
+      </div>
+      <!-- Annual -->
+      <div class="card pricing-card highlight">
+        <div class="badge" data-lang="zh">省 43%</div>
+        <div class="badge" data-lang="en">Save 43%</div>
+        <div data-lang="zh"><h3>年付版</h3></div>
+        <div data-lang="en"><h3>Annual</h3></div>
+        <div class="price">$199<small>/yr</small></div>
+        <div class="desc" data-lang="zh">约 $16.6/月 · 最优性价比</div>
+        <div class="desc" data-lang="en">~$16.6/mo · Best value</div>
+        <ul>
+          <li data-lang="zh">月付版全部权益</li>
+          <li data-lang="en">Everything in Monthly</li>
+          <li data-lang="zh">周末复盘总结</li>
+          <li data-lang="en">Weekend recap</li>
+          <li data-lang="zh">突发行情快报</li>
+          <li data-lang="en">Breaking market alerts</li>
+          <li data-lang="zh">不限次数专属问答</li>
+          <li data-lang="en">Unlimited Q&amp;A</li>
+        </ul>
+      </div>
+    </div>
+
+    <div style="margin-top:12px;font-size:.85rem;color:var(--muted)">
+      <span data-lang="zh">付费后即时生效，可随时取消，首次订阅支持 7 天无理由退款。</span>
+      <span data-lang="en">Effective immediately. Cancel anytime. 7-day refund for first subscription.</span>
+    </div>
+  </section>
+
+  <!-- Sample Report -->
+  <section>
+    <div data-lang="zh"><h2>样刊展示</h2></div>
+    <div data-lang="en"><h2>Sample Report</h2></div>
+
+    <div class="sample">
+      <div class="sample-banner">
+        <span data-lang-inline="zh">⚠️ 以下为示例数据，非实时行情，仅展示报告格式与内容深度</span>
+        <span data-lang-inline="en">⚠️ Sample data only — not live prices. Demonstrates report format &amp; depth</span>
+      </div>
+      <div class="card sample-content">
+
+        <div data-lang="zh">
+          <h4>方向判断 — 2026.11.04 样刊</h4>
+          <table>
+            <thead><tr><th>币种</th><th>方向</th><th>置信度</th><th>关键逻辑</th></tr></thead>
+            <tbody>
+              <tr><td>BTC</td><td>震荡偏多</td><td>中</td><td>日线 MA20 支撑有效，链上巨鲸净流入</td></tr>
+              <tr><td>ETH</td><td>看多</td><td>中</td><td>ETH/BTC 汇率触及区间下沿反弹，Gas 费回升</td></tr>
+              <tr><td>SOL</td><td>震荡</td><td>低</td><td>生态 TVL 持平，短期缺乏催化剂</td></tr>
+            </tbody>
+          </table>
+
+          <h4>关键价位（示例数据）</h4>
+          <table>
+            <thead><tr><th>币种</th><th>强支撑</th><th>弱支撑</th><th>弱阻力</th><th>强阻力</th></tr></thead>
+            <tbody>
+              <tr><td>BTC</td><td>$88,500</td><td>$90,200</td><td>$93,800</td><td>$95,500</td></tr>
+              <tr><td>ETH</td><td>$3,050</td><td>$3,150</td><td>$3,380</td><td>$3,500</td></tr>
+              <tr><td>SOL</td><td>$158</td><td>$165</td><td>$178</td><td>$185</td></tr>
+            </tbody>
+          </table>
+
+          <h4>资金费率 &amp; 持仓（示例数据）</h4>
+          <ul>
+            <li>BTC 资金费率：+0.0085%（略偏多）</li>
+            <li>ETH 资金费率：+0.0120%（多头偏强）</li>
+            <li>全网多空比：1.15:1</li>
+          </ul>
+
+          <h4>消息面摘要（示例）</h4>
+          <ul>
+            <li><strong>宏观：</strong>本周三公布美国 10 月非农数据，市场预期偏中性</li>
+            <li><strong>行业：</strong>某主流 CEX 上线新合规法币通道；链上监测到大户转出约 5,000 BTC 至冷钱包</li>
+            <li><strong>情绪：</strong>恐惧贪婪指数 62（贪婪区间）</li>
+          </ul>
+
+          <h4>策略建议（示例）</h4>
+          <ul>
+            <li><strong>激进：</strong>BTC 回踩 $90,200 附近轻仓试多，止损 $88,500 下方，目标 $93,800</li>
+            <li><strong>稳健：</strong>等待 BTC 站稳 $91,500 上方后跟多</li>
+            <li><strong>观望：</strong>非农数据公布前 2 小时内不建议新开仓</li>
+          </ul>
+        </div>
+
+        <div data-lang="en">
+          <h4>Direction Calls — 2026.11.04 Sample</h4>
+          <table>
+            <thead><tr><th>Asset</th><th>Bias</th><th>Confidence</th><th>Key Logic</th></tr></thead>
+            <tbody>
+              <tr><td>BTC</td><td>Neutral-bullish</td><td>Med</td><td>Daily MA20 holding, whale net inflow on-chain</td></tr>
+              <tr><td>ETH</td><td>Bullish</td><td>Med</td><td>ETH/BTC bouncing off range low, rising gas fees</td></tr>
+              <tr><td>SOL</td><td>Neutral</td><td>Low</td><td>Flat TVL, no near-term catalyst</td></tr>
+            </tbody>
+          </table>
+
+          <h4>Key Levels (Sample Data)</h4>
+          <table>
+            <thead><tr><th>Asset</th><th>Strong Support</th><th>Weak Support</th><th>Weak Resistance</th><th>Strong Resistance</th></tr></thead>
+            <tbody>
+              <tr><td>BTC</td><td>$88,500</td><td>$90,200</td><td>$93,800</td><td>$95,500</td></tr>
+              <tr><td>ETH</td><td>$3,050</td><td>$3,150</td><td>$3,380</td><td>$3,500</td></tr>
+              <tr><td>SOL</td><td>$158</td><td>$165</td><td>$178</td><td>$185</td></tr>
+            </tbody>
+          </table>
+
+          <h4>Funding Rates &amp; Positioning (Sample Data)</h4>
+          <ul>
+            <li>BTC funding: +0.0085% (slightly long-biased)</li>
+            <li>ETH funding: +0.0120% (long-biased)</li>
+            <li>Market-wide long/short ratio: 1.15:1</li>
+          </ul>
+
+          <h4>News Digest (Sample)</h4>
+          <ul>
+            <li><strong>Macro:</strong> US Oct NFP due Wednesday; market expects neutral outcome</li>
+            <li><strong>Industry:</strong> Major CEX launches new fiat on-ramp; ~5,000 BTC moved from CEX to cold storage</li>
+            <li><strong>Sentiment:</strong> Fear &amp; Greed Index at 62 (Greed)</li>
+          </ul>
+
+          <h4>Strategy Ideas (Sample)</h4>
+          <ul>
+            <li><strong>Aggressive:</strong> Light long near BTC $90,200, stop below $88,500, target $93,800</li>
+            <li><strong>Conservative:</strong> Wait for BTC to hold above $91,500 before going long</li>
+            <li><strong>Sit-out:</strong> Avoid new positions within 2 hours of NFP release</li>
+          </ul>
+        </div>
+
+        <blockquote>
+          <span data-lang="zh">本样刊所有数据均为虚构示例，仅用于展示报告格式。实际日报内容以当日市场行情为准。</span>
+          <span data-lang="en">All data in this sample is fictional, shown only to demonstrate report format. Actual reports reflect live market conditions.</span>
+        </blockquote>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section>
+    <div data-lang="zh"><h2>常见问题</h2></div>
+    <div data-lang="en"><h2>FAQ</h2></div>
+
+    <details>
+      <summary>
+        <span data-lang_inline="zh">日报通过什么渠道推送？</span>
+        <span data-lang_inline="en">How is the daily brief delivered?</span>
+        <span></span>
+      </summary>
+      <div class="faq-body">
+        <span data-lang="zh">目前通过 Telegram 或微信推送，订阅后会收到加入说明。</span>
+        <span data-lang="en">Currently delivered via Telegram or WeChat. You'll receive onboarding instructions after subscribing.</span>
+      </div>
+    </details>
+    <details>
+      <summary>
+        <span data-lang_inline="zh">免费版和付费版有什么区别？</span>
+        <span data-lang_inline="en">What's the difference between Free and Paid?</span>
+        <span></span>
+      </summary>
+      <div class="faq-body">
+        <span data-lang="zh">免费版仅包含次日推送的 BTC 摘要。付费版提供实时推送、三币种完整分析、资金费率、消息面解读和策略建议。年付版额外包含周末复盘、突发快报和不限次数问答。</span>
+        <span data-lang="en">Free tier includes a delayed BTC-only summary. Paid tiers unlock real-time delivery, full 3-asset analysis, funding rates, news digest and strategy ideas. Annual adds weekend recaps, breaking alerts and unlimited Q&amp;A.</span>
+      </div>
+    </details>
+    <details>
+      <summary>
+        <span data-lang_inline="zh">可以随时取消吗？</span>
+        <span data-lang_inline="en">Can I cancel anytime?</span>
+        <span></span>
+      </summary>
+      <div class="faq-body">
+        <span data-lang="zh">可以。取消后当期订阅仍有效至到期日。首次订阅支持 7 天无理由退款。</span>
+        <span data-lang="en">Yes. After cancellation, your current period remains active until expiry. First subscription includes a 7-day no-questions-asked refund.</span>
+      </div>
+    </details>
+    <details>
+      <summary>
+        <span data-lang_inline="zh">报告的方向判断准确率如何？</span>
+        <span data-lang_inline="en">How accurate are the direction calls?</span>
+        <span></span>
+      </summary>
+      <div class="faq-body">
+        <span data-lang="zh">我们不承诺任何准确率或收益。加密市场受多重不可预测因素影响，报告仅提供分析框架和参考视角，不能替代独立判断。</span>
+        <span data-lang="en">We do not promise any accuracy rate or returns. Crypto markets are influenced by unpredictable factors. Reports provide an analytical framework and reference perspective — not a substitute for independent judgment.</span>
+      </div>
+    </details>
+    <details>
+      <summary>
+        <span data-lang_inline="zh">支持哪些支付方式？</span>
+        <span data-lang_inline="en">What payment methods are supported?</span>
+        <span></span>
+      </summary>
+      <div class="faq-body">
+        <span data-lang="zh">请通过 X (Twitter) 联系我们了解支付详情。</span>
+        <span data-lang="en">Please contact us via X (Twitter) for payment details.</span>
+      </div>
+    </details>
+  </section>
+
+  <!-- Disclaimer -->
+  <section>
+    <div data-lang="zh"><h2>风险提示</h2></div>
+    <div data-lang="en"><h2>Risk Disclaimer</h2></div>
+    <div class="disclaimer">
+      <div data-lang="zh">
+        <p><strong>重要声明：</strong>本服务所有内容（包括但不限于方向判断、价位分析、策略建议）均仅供信息参考，<strong>不构成任何投资建议</strong>。加密货币市场波动极大，24 小时不间断交易，杠杆风险尤为突出。</p>
+        <p style="margin-top:10px">我们<strong>不承诺任何收益</strong>，过往判断不代表未来表现。请根据自身风险承受能力独立决策，盈亏自负。切勿将本报告作为唯一决策依据。</p>
+      </div>
+      <div data-lang="en">
+        <p><strong>Important:</strong> All content provided by this service — including direction calls, level analysis and strategy ideas — is for <strong>informational purposes only and does not constitute investment advice</strong>. Cryptocurrency markets are highly volatile, trade 24/7, and carry significant leverage risk.</p>
+        <p style="margin-top:10px">We <strong>do not guarantee any returns</strong>. Past calls do not predict future performance. Make independent decisions based on your own risk tolerance. Never rely on this report as your sole basis for trading decisions.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section class="contact">
+    <div data-lang="zh"><h2>联系我们</h2></div>
+    <div data-lang="en"><h2>Contact</h2></div>
+    <p style="color:var(--muted);margin-bottom:20px">
+      <span data-lang="zh">如有疑问或希望了解更多，请通过 X (Twitter) 联系：</span>
+      <span data-lang="en">Questions or inquiries? Reach out on X (Twitter):</span>
+    </p>
+    <a class="x-link" href="https://x.com/wmtoiYkhlE11674" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+      @wmtoiYkhlE11674
+    </a>
+  </section>
+
+</div>
+
+<footer>
+  <span data-lang="zh">&copy; 2026 加密行情日报 · 内容仅供参考，不构成投资建议</span>
+  <span data-lang="en">&copy; 2026 Crypto Daily Brief · For informational purposes only, not investment advice</span>
+</footer>
+
+<script>
+function setLang(lang) {
+  document.body.classList.toggle('en', lang === 'en');
+  document.getElementById('btn-zh').classList.toggle('active', lang === 'zh');
+  document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+  try { localStorage.setItem('lang', lang); } catch(e) {}
+}
+// Restore preference
+try {
+  const saved = localStorage.getItem('lang');
+  if (saved === 'en') setLang('en');
+} catch(e) {}
+</script>
+
+</body>
+</html>

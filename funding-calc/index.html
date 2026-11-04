@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light"><title>Funding Rate Arbitrage Calculator</title>
+<style>
+:root{font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#20362f;background:#f3f5ef;font-synthesis:none}*{box-sizing:border-box}body{margin:0}button,input{font:inherit}button{cursor:pointer}header,main,footer{max-width:1160px;margin:auto;padding:0 32px}header{display:flex;align-items:center;justify-content:space-between;padding-top:30px;padding-bottom:30px;border-bottom:1px solid #dbe1d7}.brand{font-weight:750;letter-spacing:-.5px;display:flex;align-items:center;gap:10px}.mark{display:grid;place-items:center;width:32px;height:32px;background:#224b3c;color:#e2f8b4;border-radius:10px;font-size:22px}#language{background:transparent;border:1px solid #c7d1c3;border-radius:24px;padding:9px 16px;font-size:13px;color:inherit}.intro{padding:42px 0 28px}.eyebrow{color:#64765c;font-size:11px;letter-spacing:2px;font-weight:750;text-transform:uppercase}h1{font-size:clamp(30px,4vw,46px);letter-spacing:-1.8px;line-height:1.15;margin:12px 0}p{line-height:1.6}.intro p{color:#6b786e;margin:0;font-size:15px}.layout{display:grid;grid-template-columns:1fr 1.08fr;gap:24px;align-items:start}.panel{background:#fff;border:1px solid #e0e6dc;border-radius:20px;padding:26px}.panelhead{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:23px}h2{font-size:17px;margin:0;letter-spacing:-.3px}.tag{font-size:10px;letter-spacing:1px;background:#f0f5e9;color:#56713f;border-radius:20px;padding:6px 9px;white-space:nowrap}.fields{display:grid;grid-template-columns:1fr 1fr;gap:19px 16px}label{display:block;font-size:12px;color:#56665c;font-weight:600;margin-bottom:8px}.input{display:flex;align-items:center;border:1px solid #dbe2d7;background:#fafbf8;border-radius:9px;overflow:hidden}.input:focus-within{outline:2px solid #7c9b64;outline-offset:2px}input[type=number]{width:100%;min-width:0;border:0;outline:0;background:transparent;padding:12px;color:#263c30;font-size:16px;font-variant-numeric:tabular-nums}.unit{font-size:12px;color:#85907f;padding-right:12px;white-space:nowrap}.subhead{font-size:11px;text-transform:uppercase;letter-spacing:1.2px;color:#788371;margin:24px 0 15px;padding-top:20px;border-top:1px solid #edf0e8}.hint{font-size:11px;color:#7a8676;line-height:1.6;margin-bottom:0}.result{background:#203f32;color:#f4f8ed;border-radius:20px;padding:27px}.result .eyebrow{color:#b4c8a5}.hero-value{font-size:clamp(36px,5vw,52px);font-weight:600;letter-spacing:-1.8px;margin:12px 0 4px;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}.hero-sub{color:#bbcbb6;font-size:12px}.returns{display:grid;grid-template-columns:1fr 1fr;gap:16px;border-top:1px solid #ffffff25;margin-top:25px;padding-top:22px}.returns label{color:#bbccb4;font-size:11px}.returns strong{font-size:25px;letter-spacing:-.7px;font-weight:500;overflow-wrap:anywhere}.negative{color:#ffd0bd}.result .positive{color:#dbf2b0}.metrics{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0}.metric{padding:19px;background:white;border:1px solid #e0e6dc;border-radius:13px}.metric label{font-size:11px}.metric strong{font-size:22px;letter-spacing:-.6px;font-weight:600;overflow-wrap:anywhere}.metric small{display:block;font-size:10px;color:#7e8b7c;margin-top:7px}.allocation{padding:20px;border:1px solid #dce4d4;border-radius:14px;background:#eaf0e2}.allocation-head{display:flex;justify-content:space-between;gap:12px;font-size:12px}.bar{display:flex;height:7px;gap:3px;margin:14px 0;border-radius:5px;overflow:hidden}.bar span:first-child{background:#45684b}.bar span:last-child{background:#a5be85;flex:1}.legend{display:flex;justify-content:space-between;gap:10px;font-size:11px;color:#5e7057}.notes{margin:28px 0 0;padding:22px 0;border-top:1px solid #dbe1d7;display:grid;grid-template-columns:1fr 1fr;gap:32px}.notes h3{font-size:12px;margin:0}.notes p{font-size:12px;color:#74806e;margin:7px 0}.toggle{display:flex;align-items:center;gap:7px;font-size:11px;color:#becfb7;margin:16px 0 0;font-weight:400}.toggle input{accent-color:#c8e49c}#error{color:#a43b28;font-size:12px;margin:14px 0 0}footer{font-size:10px;color:#89917f;display:flex;justify-content:space-between;padding-top:16px;padding-bottom:24px}button:focus-visible{outline:2px solid #477149;outline-offset:3px}[hidden]{display:none!important}@media(max-width:760px){header,main,footer{padding-left:20px;padding-right:20px}.intro{padding-top:30px}.layout{grid-template-columns:1fr}.panel,.result{padding:22px}.notes{grid-template-columns:1fr;gap:12px}.brand{font-size:14px}.intro p{font-size:13px}footer{gap:15px}.hero-value{font-size:42px}}@media(prefers-reduced-motion:no-preference){button{transition:background .15s}button:hover{background:#e6eddf!important}}
+</style>
+</head>
+<body>
+<header><div class="brand"><span class="mark" aria-hidden="true">≋</span> Funding Lab</div><button id="language" type="button" aria-label="Switch to Chinese">中文 / EN</button></header>
+<main>
+<section class="intro"><div class="eyebrow" data-i18n="eyebrow"></div><h1 data-i18n="title"></h1><p data-i18n="subtitle"></p></section>
+<div class="layout">
+<section class="panel"><div class="panelhead"><h2 data-i18n="parameters"></h2><span class="tag" data-i18n="strategy"></span></div>
+<form id="form" novalidate><div class="fields" id="mainFields"></div><div class="subhead" data-i18n="fees"></div><div class="fields" id="feeFields"></div><p class="hint" data-i18n="feeHint"></p><p id="error" role="alert" hidden></p></form></section>
+<section aria-label="Calculation results" id="results"><div class="result"><div class="eyebrow" data-i18n="net"></div><div class="hero-value positive" id="netProfit"></div><div class="hero-sub" id="settlementText"></div><div class="returns"><div><label data-i18n="roi"></label><strong id="roi"></strong></div><div><label id="annualLabel">APR</label><strong id="annual"></strong></div></div><label class="toggle"><input type="checkbox" id="apy"><span data-i18n="showApy"></span></label></div>
+<div class="metrics"><div class="metric"><label data-i18n="notional"></label><strong id="notional"></strong><small data-i18n="perLeg"></small></div><div class="metric"><label data-i18n="funding"></label><strong id="fundingIncome"></strong><small data-i18n="beforeFees"></small></div><div class="metric"><label data-i18n="totalFees"></label><strong id="totalFees"></strong><small data-i18n="roundTrip"></small></div><div class="metric"><label data-i18n="breakEven"></label><strong id="breakEvenDays"></strong><small data-i18n="discrete"></small></div></div>
+<div class="allocation"><div class="allocation-head"><strong data-i18n="allocation"></strong><span id="split"></span></div><div class="bar" aria-hidden="true"><span id="spotBar"></span><span></span></div><div class="legend"><span id="spotCapital"></span><span id="margin"></span></div></div></section>
+</div>
+<section class="notes"><div><h3 data-i18n="modelTitle"></h3><p data-i18n="model"></p></div><div><h3 data-i18n="riskTitle"></h3><p data-i18n="risk"></p></div></section>
+</main><footer><span data-i18n="offline"></span><span data-i18n="currency"></span></footer>
+<script src="calc.js"></script>
+<script>
+'use strict';
+const copy = {
+en: {eyebrow:'Market neutral · Funding strategy',title:'Let the funding do the work.',subtitle:'Model a spot long + perpetual short. Understand the return, before you take the trade.',parameters:'Your position',strategy:'LONG SPOT / SHORT PERP',principal:'Principal',leverage:'Perpetual leverage',fundingRate:'Funding rate / settlement',intervalHours:'Settlement interval',days:'Holding period',fees:'Trading fees · each leg, each direction',spotOpen:'Spot · open',spotClose:'Spot · close',perpOpen:'Perpetual · open',perpClose:'Perpetual · close',feeHint:'Fees are percentages of each leg’s notional. Both entry and exit are included.',net:'Estimated net profit',roi:'Return on principal',showApy:'Show hypothetical APY instead of APR',notional:'Notional per leg',perLeg:'Equal spot long & perpetual short',funding:'Total funding income',beforeFees:'Signed cash flow, before fees',totalFees:'Total trading fees',roundTrip:'Entry + exit · both legs',breakEven:'Break-even time',discrete:'At a settlement boundary',allocation:'Capital allocation',modelTitle:'The model, made explicit',model:'For principal P and leverage L, each leg has notional N = P × L / (L + 1). Spot uses N; perpetual margin uses N / L. Fees are deducted from returns, with no fee reserve. Prices and funding stay constant; the first payment arrives after one full interval. APR is linear; APY assumes identical holding cycles and reinvestment, not a forecast.',riskTitle:'Neutral exposure. Real risks.',risk:'Funding may reverse. Liquidation, basis moves, slippage, margin changes, exchange failure and stablecoin risks remain. Spot gains may not protect isolated perpetual margin. No borrowing costs or collateral yield included. Educational estimate, not investment advice.',offline:'LOCAL CALCULATION · NO NETWORK REQUIRED',currency:'All amounts in the same quote currency',hourUnit:'h',dayUnit:'days',spot:'Spot',margin:'Margin',settlements:'settlements',over:'over',never:'Never',na:'N/A',error:'Enter finite numbers: principal and interval > 0, leverage ≥ 1, days and fees ≥ 0. Values must fit numeric limits.',resultLabel:'Calculation results'},
+zh: {eyebrow:'市场中性 · 资金费率策略',title:'让资金费率，成为收益。',subtitle:'模拟现货做多 + 永续做空，在交易之前看清收益与成本。',parameters:'仓位参数',strategy:'现货多 / 永续空',principal:'本金',leverage:'永续合约杠杆',fundingRate:'资金费率 / 每次结算',intervalHours:'结算间隔',days:'持有天数',fees:'交易手续费 · 两腿分别开平仓',spotOpen:'现货 · 开仓',spotClose:'现货 · 平仓',perpOpen:'永续 · 开仓',perpClose:'永续 · 平仓',feeHint:'手续费按各腿名义仓位的百分比计算，包含开仓和平仓。',net:'预计净收益',roi:'本金收益率',showApy:'显示假设复投的 APY（替代 APR）',notional:'每腿名义仓位',perLeg:'等额现货多头与永续空头',funding:'总资金费收入',beforeFees:'带正负号的现金流，未扣手续费',totalFees:'总交易手续费',roundTrip:'两腿开仓 + 平仓',breakEven:'手续费回本时间',discrete:'按完整结算时点计算',allocation:'本金分配',modelTitle:'明确计算假设',model:'本金 P、杠杆 L，每腿名义仓位 N = P × L / (L + 1)。现货占用 N，永续保证金占用 N / L。不预留手续费，从收益中扣除。价格与费率恒定，首次结算在一个完整间隔后发生。APR 为线性年化；APY 假设重复相同持仓周期并复投，不代表收益预测。',riskTitle:'敞口中性，风险仍然存在',risk:'资金费率可能转负。仍有爆仓、基差变化、滑点、保证金调整、交易所及稳定币风险。现货盈利未必能保护逐仓合约保证金。不计借贷成本和抵押品利息。仅供学习估算，不构成投资建议。',offline:'本地计算 · 无需网络',currency:'所有金额使用相同计价币种',hourUnit:'小时',dayUnit:'天',spot:'现货',margin:'保证金',settlements:'次结算',over:'持有',never:'无法回本',na:'不适用',error:'请输入有限数值：本金和间隔 > 0，杠杆 ≥ 1，天数及手续费 ≥ 0；数值不得超出计算范围。',resultLabel:'计算结果'}
+};
+const definitions = [
+ ['principal',10000,0.01,'0.01',''],['leverage',3,1,'0.1','×'],['fundingRate',0.01,null,'0.001','%'],['intervalHours',8,0.01,'0.1','hourUnit'],['days',30,0,'1','dayUnit'],
+ ['spotOpen',0.1,0,'0.01','%'],['spotClose',0.1,0,'0.01','%'],['perpOpen',0.05,0,'0.01','%'],['perpClose',0.05,0,'0.01','%']
+];
+let lang = 'en';
+for (const [key,value,min,step,unit] of definitions) {
+ const wrap = document.createElement('div');
+ wrap.innerHTML = `<label for="${key}" data-i18n="${key}"></label><div class="input"><input id="${key}" name="${key}" type="number" value="${value}" step="${step}" ${min === null ? '' : `min="${min}"`} required><span class="unit" ${copy.en[unit] ? `data-i18n="${unit}"` : ''}>${copy.en[unit] || unit}</span></div>`;
+ document.getElementById(key.startsWith('spot') || key.startsWith('perp') ? 'feeFields' : 'mainFields').append(wrap);
+}
+const el = id => document.getElementById(id);
+function render() {
+ const t = copy[lang];
+ const number = n => new Intl.NumberFormat(lang === 'en' ? 'en-US' : 'zh-CN', {minimumFractionDigits:2,maximumFractionDigits:2}).format(n);
+ const percent = n => n === null ? t.na : `${number(n * 100)}%`;
+ try {
+  const inputs = Object.fromEntries(definitions.map(([key]) => [key,el(key).value.trim() === '' ? NaN : Number(el(key).value)]));
+  const r = FundingCalc.calculate(inputs);
+  el('error').hidden = true; el('results').removeAttribute('aria-invalid');
+  for (const key of ['netProfit','notional','fundingIncome','totalFees']) el(key).textContent = number(r[key]);
+  el('netProfit').className = `hero-value ${r.netProfit < 0 ? 'negative' : 'positive'}`;
+  el('roi').textContent = percent(r.roi);
+  el('annual').textContent = percent(el('apy').checked ? r.apy : r.apr);
+  el('annualLabel').textContent = el('apy').checked ? 'APY' : 'APR';
+  el('settlementText').textContent = `${r.settlements} ${t.settlements} · ${t.over} ${inputs.days} ${t.dayUnit}`;
+  el('breakEvenDays').textContent = r.breakEvenDays === null ? t.never : `${new Intl.NumberFormat(lang === 'en' ? 'en-US' : 'zh-CN',{maximumFractionDigits:4}).format(r.breakEvenDays)} ${t.dayUnit}`;
+  const share = r.spotCapital / inputs.principal * 100;
+  el('split').textContent = `${share.toFixed(1)}% / ${(100-share).toFixed(1)}%`;
+  el('spotBar').style.width = `${share}%`;
+  el('spotCapital').textContent = `${t.spot} ${number(r.spotCapital)}`;
+  el('margin').textContent = `${t.margin} ${number(r.margin)}`;
+ } catch (_) {
+  el('error').textContent = t.error; el('error').hidden = false;
+  el('results').setAttribute('aria-invalid','true');
+  for(const id of ['netProfit','notional','fundingIncome','totalFees','roi','annual','breakEvenDays','split','spotCapital','margin','settlementText']) el(id).textContent = '—';
+  el('spotBar').style.width = '50%';
+ }
+}
+function translate() {
+ document.documentElement.lang = lang === 'en' ? 'en' : 'zh-CN';
+ document.title = lang === 'en' ? 'Funding Rate Arbitrage Calculator' : '资金费率套利计算器';
+ document.querySelectorAll('[data-i18n]').forEach(node => node.textContent = copy[lang][node.dataset.i18n]);
+ el('language').setAttribute('aria-label',lang === 'en' ? 'Switch to Chinese' : '切换为英文');
+ el('results').setAttribute('aria-label',copy[lang].resultLabel);
+ render();
+}
+el('form').addEventListener('submit',event => event.preventDefault());
+el('form').addEventListener('input',render);
+el('apy').addEventListener('change',render);
+el('language').addEventListener('click',() => {lang = lang === 'en' ? 'zh' : 'en'; translate();});
+translate();
+</script>
+</body>
+</html>
