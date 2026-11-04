@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>仓位与止损计算器</title>
+<style>
+:root{font-family:system-ui,-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;color:#eaf0fa;background:#0c1220;line-height:1.6}*{box-sizing:border-box}body{margin:0;padding:44px 20px}main{max-width:1040px;margin:auto}.eyebrow{color:#69dfc0;font-size:12px;letter-spacing:.16em}h1{font-size:clamp(26px,5vw,38px);line-height:1.3;margin:12px 0}header p{color:#a9b6cc;margin:0 0 28px}.layout{display:grid;grid-template-columns:1fr 1fr;gap:22px}.panel{background:#151e30;border:1px solid #2a3650;border-radius:20px;padding:26px}h2{font-size:18px;margin:0 0 20px}.fields{display:grid;grid-template-columns:1fr 1fr;gap:18px}label{display:block;font-size:14px;color:#c6d2e5}input,select{display:block;width:100%;min-width:0;margin-top:7px;padding:12px;background:#0c1424;color:#f0f5ff;border:1px solid #3c4c68;border-radius:10px;font:inherit;font-size:16px}input:focus-visible,select:focus-visible,button:focus-visible{outline:2px solid #69dfc0;outline-offset:3px}button{margin-top:24px;width:100%;padding:13px;border:0;border-radius:10px;background:#69dfc0;color:#06261f;font-size:16px;font-weight:700;cursor:pointer}.hint{font-size:12px;color:#a9b6cc;margin:16px 0 0}.result-top{display:flex;align-items:center;justify-content:space-between;gap:12px}.badge{color:#69dfc0;font-size:12px;background:#203d3c;padding:3px 9px;border-radius:20px}.result-top h2{margin:0}.hero{padding:24px 0;border-bottom:1px solid #2a3650}.hero dt{color:#a9b6cc;font-size:14px}.hero dd{font-size:32px;font-weight:700;margin:6px 0 0;color:#8cecd2;overflow-wrap:anywhere}dl{margin:0}.row{display:flex;justify-content:space-between;gap:20px;padding:14px 0;border-bottom:1px solid #253149}.row dt{color:#a9b6cc;font-size:14px}.row dd{margin:0;text-align:right;overflow-wrap:anywhere;min-width:0}.messages{margin-top:20px}.notice{padding:12px 14px;border-radius:10px;font-size:14px;margin:8px 0;background:#203634;color:#a7e8d6}.warning{background:#403020;color:#ffdb9d}.error{background:#422735;color:#ffc1ce}footer{color:#9aabc3;font-size:12px;margin:24px 4px}footer a{color:#a4e7d7}@media(max-width:720px){body{padding:28px 16px}.layout{grid-template-columns:1fr}.panel{padding:22px}}@media(max-width:360px){.fields{grid-template-columns:1fr}.row{gap:10px}}
+</style>
+</head>
+<body><main>
+<header><div class="eyebrow">POSITION / RISK</div><h1>先定风险，再算仓位。</h1><p>加密合约仓位与止损计算器 · 逐仓 / 稳定币本位线性合约</p></header>
+<div class="layout">
+<section class="panel" aria-labelledby="inputs-title"><h2 id="inputs-title">设置交易参数</h2>
+<form id="calculator" novalidate><div class="fields">
+<label for="capital">本金（USDT）<input id="capital" type="number" inputmode="decimal" min="0" step="any" value="1000" required></label>
+<label for="risk">风险金额（USDT）<input id="risk" type="number" inputmode="decimal" min="0" step="any" value="20" required></label>
+<label for="entry">入场价（USDT / 币）<input id="entry" type="number" inputmode="decimal" min="0" step="any" value="60000" required></label>
+<label for="stop">止损价（USDT / 币）<input id="stop" type="number" inputmode="decimal" min="0" step="any" value="59000" required></label>
+<label for="leverage">杠杆倍数<input id="leverage" type="number" inputmode="decimal" min="1" step="any" value="10" required></label>
+<label for="side">交易方向<select id="side"><option value="long">做多</option><option value="short">做空</option></select></label>
+<label for="mmr">维持保证金率（%）<input id="mmr" type="number" inputmode="decimal" min="0" max="99.999" step="any" value="0.5" required></label>
+</div><button type="submit">计算仓位</button><p class="hint">全部计算在浏览器本地完成，无需登录，不发送交易指令。修改参数后自动更新。</p></form></section>
+<section class="panel" aria-labelledby="results-title"><div class="result-top"><h2 id="results-title">仓位测算</h2><span class="badge">逐仓近似</span></div>
+<div aria-live="polite" aria-atomic="true"><dl><div class="hero"><dt>仓位数量（币）</dt><dd id="quantity">—</dd></div><div class="row"><dt>名义价值</dt><dd id="notional">—</dd></div><div class="row"><dt>所需保证金</dt><dd id="margin">—</dd></div><div class="row"><dt>止损亏损（不含费用）</dt><dd id="loss">—</dd></div><div class="row"><dt>逐仓爆仓价近似值</dt><dd id="liquidation">—</dd></div></dl><div id="messages" class="messages"></div></div>
+</section></div>
+<footer>仅作计算与学习参考，不构成投资建议。未计手续费、资金费、滑点及交易所风险档位；止损不保证按指定价格成交。实际强平以交易所标记价格和规则为准。详见同目录 README.md。</footer>
+</main>
+<script>
+'use strict';
+const ids=['capital','risk','entry','stop','leverage','mmr'];
+const outputs=['quantity','notional','margin','loss','liquidation'];
+function compute(p){
+  if(ids.some(k=>!Number.isFinite(p[k])))throw new Error('请完整填写所有参数，并使用有效数字。');
+  if(p.capital<=0||p.risk<=0||p.entry<=0||p.stop<=0)throw new Error('本金、风险金额、入场价和止损价必须大于 0。');
+  if(p.leverage<1)throw new Error('杠杆倍数必须大于或等于 1。');
+  if(p.mmr<0||p.mmr>=100)throw new Error('维持保证金率须大于或等于 0%，且小于 100%。');
+  if(!['long','short'].includes(p.side))throw new Error('请选择有效的交易方向。');
+  const long=p.side==='long',m=p.mmr/100;
+  if((long&&p.stop>=p.entry)||(!long&&p.stop<=p.entry))throw new Error(long?'做多的止损价必须低于入场价。':'做空的止损价必须高于入场价。');
+  if(1/p.leverage<=m)throw new Error('初始保证金率不高于维持保证金率，入场即可能触发强平；请降低杠杆或核对维持保证金率。');
+  const quantity=p.risk/Math.abs(p.entry-p.stop),notional=quantity*p.entry,margin=notional/p.leverage;
+  const liquidation=long?p.entry*(1-1/p.leverage)/(1-m):p.entry*(1+1/p.leverage)/(1+m);
+  const loss=quantity*Math.abs(p.entry-p.stop);
+  if(![quantity,notional,margin,liquidation,loss].every(Number.isFinite)||quantity<=0||notional<=0||margin<=0)throw new Error('数值超出可计算范围，请调整参数。');
+  const warnings=[];
+  if(long?p.stop<=liquidation:p.stop>=liquidation)warnings.push('止损价位于爆仓价之外或与其重合：价格可能先触发强平，再到达止损价。');
+  if(margin>p.capital)warnings.push('所需保证金超过本金，当前本金不足以建立该仓位。');
+  if(p.risk>p.capital)warnings.push('风险金额超过本金，请重新核对风险预算。');
+  return {quantity,notional,margin,loss,liquidation,warnings};
+}
+function format(n,digits=4){return n!==0&&Math.abs(n)<10**(-digits)?n.toExponential(4):n.toLocaleString('zh-CN',{maximumFractionDigits:digits});}
+function message(text,type){const el=document.createElement('p');el.className='notice '+type;el.textContent=text;document.getElementById('messages').append(el);}
+function render(){
+  document.getElementById('messages').replaceChildren();
+  try{
+    const p={side:document.getElementById('side').value};
+    ids.forEach(k=>{const el=document.getElementById(k);p[k]=el.value.trim()===''?NaN:Number(el.value);});
+    const r=compute(p);
+    outputs.forEach(k=>{document.getElementById(k).textContent=format(r[k],k==='quantity'?8:4)+(k==='quantity'?'':k==='liquidation'?' USDT / 币':' USDT');});
+    if(r.warnings.length)r.warnings.forEach(t=>message(t,'warning'));
+    else message('按当前简化模型，止损位于爆仓价之前，且保证金未超过本金。请另留费用与价格波动余量。','');
+  }catch(e){outputs.forEach(k=>{document.getElementById(k).textContent='—';});message(e.message,'error');}
+}
+document.getElementById('calculator').addEventListener('submit',e=>{e.preventDefault();render();});
+document.getElementById('calculator').addEventListener('input',render);
+render();
+</script></body></html>
