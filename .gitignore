@@ -4,3 +4,4 @@ __pycache__/
 .env
 discord-bot/alerts.json*
 crypto-scraper/output/
+position-calc/卖点文案.md
