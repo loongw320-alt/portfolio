@@ -51,7 +51,7 @@ def normalize(payload):
     seen = set()
     for item in items:
         inst = item.get('instId') or (str(item.get('sym', '')).upper() + '-USDT-SWAP')
-        if not re.fullmatch(r'[A-Z0-9]+-USDT-SWAP', inst):
+        if not re.fullmatch(r'[A-Z0-9]+-USDT-SWAP', inst) or inst.startswith('TEST'):
             continue
         if inst in seen:
             raise ValueError(f'Duplicate instrument: {inst}')
@@ -78,7 +78,15 @@ def fetch_market():
     tickers = api('/api/v5/market/tickers', instType='SWAP')
     rows = normalize(tickers)
     warnings = []
+    # Bulk request first (one call for every contract); fall back per instrument for gaps.
+    try:
+        bulk = {d.get('instId'): number(d.get('fundingRate')) for d in api('/api/v5/public/funding-rate', instId='ANY')}
+    except (OSError, ValueError, KeyError, TypeError):
+        bulk = {}
     for row in rows:
+        if bulk.get(row['inst_id']) is not None:
+            row['funding_pct'] = bulk[row['inst_id']] * 100
+            continue
         try:
             data = api('/api/v5/public/funding-rate', instId=row['inst_id'])
             rate = number(data[0].get('fundingRate')) if data else None
@@ -114,7 +122,8 @@ def write_reports(rows, output, source, warnings=()):
         with (output / (name + '.csv')).open('w', encoding='utf-8-sig', newline='') as f:
             writer = csv.DictWriter(f, fieldnames=['rank'] + FIELDS)
             writer.writeheader()
-            writer.writerows(dict(rank=i, **row) for i, row in enumerate(ordered, 1))
+            writer.writerows(dict(rank=i, **{k: (round(v, 6) if isinstance(v, float) and k != 'last' else v)
+                                             for k, v in row.items()}) for i, row in enumerate(ordered, 1))
         body = ''
         for i, row in enumerate(ordered, 1):
             cells = ''.join(f'<td class="{"up" if row[k] is not None and row[k] >= 0 else "down"}">{display(row[k], True)}%</td>'

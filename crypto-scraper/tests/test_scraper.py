@@ -45,12 +45,22 @@ class ScraperTests(unittest.TestCase):
     @patch('scraper.time.sleep')
     @patch('scraper.api')
     def test_funding_failure_retains_contract(self, api, sleep):
-        api.side_effect = [[dict(instId='BTC-USDT-SWAP', last=1)], OSError('offline')]
+        api.side_effect = [[dict(instId='BTC-USDT-SWAP', last=1)], OSError('bulk offline'), OSError('offline')]
         rows, warnings = scraper.fetch_market()
         self.assertEqual(len(rows), 1)
         self.assertIsNone(rows[0]['funding_pct'])
         self.assertEqual(len(warnings), 1)
         self.assertEqual(api.call_args_list[0].kwargs, {'instType': 'SWAP'})
+
+    @patch('scraper.time.sleep')
+    @patch('scraper.api')
+    def test_bulk_funding_single_request(self, api, sleep):
+        api.side_effect = [[dict(instId='BTC-USDT-SWAP', last=1), dict(instId='TEST1-USDT-SWAP', last=1)],
+                           [dict(instId='BTC-USDT-SWAP', fundingRate='0.0001')]]
+        rows, warnings = scraper.fetch_market()
+        self.assertEqual([r['inst_id'] for r in rows], ['BTC-USDT-SWAP'])
+        self.assertAlmostEqual(rows[0]['funding_pct'], 0.01)
+        self.assertEqual((api.call_count, warnings), (2, []))
 
     @patch('scraper.urlopen')
     def test_request_header(self, opener):

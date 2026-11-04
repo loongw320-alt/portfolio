@@ -1,6 +1,6 @@
 {
-  "source": "离线快照 / OFFLINE SNAPSHOT: market.json · 采集时间未知 / capture time unknown · 非实时 / not live",
-  "generated_at_utc": "2026-11-04T06:40:08+00:00",
-  "count": 30,
+  "source": "OKX public API · sequential snapshot / 分次采集快照",
+  "generated_at_utc": "2026-11-04T12:12:12+00:00",
+  "count": 525,
   "warnings": []
 }

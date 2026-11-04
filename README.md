@@ -20,15 +20,15 @@ Three independent projects covering market-data processing, an asynchronous bot 
 Python 项目要求 Python 3.10+。从本目录执行 / Python projects require Python 3.10+. From this directory:
 
 ```sh
-python3 crypto-scraper/scraper.py --offline market.json --output crypto-scraper/examples
-(cd crypto-scraper && python3 -m unittest discover -s tests -v)
-(cd discord-bot && python3 -m py_compile bot.py logic.py && python3 -m unittest discover -s tests -v)
+python3 crypto-scraper/scraper.py --output /tmp/okx-report      # live OKX, ~1s, no API key
+python3 crypto-scraper/scraper.py --offline market.json --output /tmp/offline-report
+python3 -m pytest crypto-scraper/tests discord-bot/tests   # or: python3 -m unittest discover -s <project>/tests
 ```
 
 用浏览器打开 `crypto-scraper/examples/report.html` 或 `position-calc/index.html`。启动机器人需安装依赖、配置 Discord token 与服务器权限，详见项目 README；本地检查无需连接 Discord。
 
 Open either HTML file in a browser. Running the bot requires dependencies, a Discord token and server permissions; see its README. Local checks do not connect to Discord.
 
-`market.json` 为已有的 30 条行情快照，原文件保留，采集时间未知。示例不是实时行情，离线处理不会补造全市场数据。每个项目 README 均含中英双语功能、运行方式与输出示例。
+爬虫示例报告是 2026-11-04 在线实跑 OKX 生成的 525 个 USDT 永续合约快照（非自动更新）。`market.json` 是一份 30 条的离线样例，用于无网络演示和测试。每个项目 README 均含中英双语功能、运行方式与输出示例。
 
-The existing `market.json` contains 30 snapshot rows and is preserved unchanged. Capture time is unknown. Examples are not live quotes; offline processing does not invent full-market coverage. Each project has bilingual features, setup instructions and output examples.
+The scraper example report is a real live OKX run from 2026-11-04 covering 525 USDT perpetuals (a point-in-time snapshot, not auto-updating). `market.json` is a 30-row offline sample for network-free demos and tests. Each project has bilingual features, setup instructions and output examples.
